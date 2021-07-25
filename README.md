@@ -1,6 +1,7 @@
 # 4depack
 Library to play around with 4dots packers
 
+Note: There will not be any "official" releases until the library will be more stable, meanwhile you can just compile it yourself if you want to play around with it.
 ## Changes from VB.NET
 <pre>
 - Support for CRC32 Hash Generation & Check
