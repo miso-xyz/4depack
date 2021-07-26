@@ -3,6 +3,7 @@ Library to play around with 4dots packers
 
 ## Changes from VB.NET
 <pre>
+v1.0r1:
 - Support for CRC32 Hash Generation & Check
 - Improved Project File Reading
 - AutoFind Decryption & Encryption Keys
