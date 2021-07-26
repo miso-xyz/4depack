@@ -5,13 +5,13 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("4depack-cs")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("4depack")]
+[assembly: AssemblyDescription("Open Source Library to play around with 4dots Softwares Packers")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("4depack-cs")]
-[assembly: AssemblyCopyright("Copyright ©  2021")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCompany("misonothx")]
+[assembly: AssemblyProduct("4depack - v1.0r1")]
+[assembly: AssemblyCopyright("Copyright © misonothx 2021")]
+[assembly: AssemblyTrademark("misonothx")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 

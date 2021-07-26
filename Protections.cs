@@ -6,17 +6,17 @@ using dnlib.DotNet;
 using dnlib.DotNet.Emit;
 using System.IO;
 
-namespace FourDepack_cs.Security
+namespace FourDepack.Security
 {
-    class Protections
+    public class Protections
     {
-        private FourDepack_cs.FourDots_PackedApplication TargetApplicationGlobalInfo;
+        private FourDepack.FourDots_PackedApplication PackedApplication_GlobalInfo;
 
-        public Protections(string path) { TargetApplicationGlobalInfo = new FourDepack_cs.FourDots_PackedApplication(path); }
+        public Protections(string path) { PackedApplication_GlobalInfo = new FourDepack.FourDots_PackedApplication(path); }
 
         public bool isCRCValid() // To pass the checksum, the variable 'list' should contain 3 '|', if it doesn't the CRC isn't valid.
         {
-            using (FileStream fileStream = new FileStream(TargetApplicationGlobalInfo.TargetApplicationPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (FileStream fileStream = new FileStream(PackedApplication_GlobalInfo.PackedApplication_FilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 int charCount = 0;
                 int cycleCount = 0;
@@ -39,11 +39,11 @@ namespace FourDepack_cs.Security
             }
         }
 
-        public string PackerName // Packer name can be retrieved via namespaces, its very inaccurate yet nothing more can be done.
+        public string PackerName // Most Packers name can be retrieved via namespaces, its very inaccurate yet nothing more can be done.
         {
             get
             {
-                foreach (TypeDef t_ in TargetApplicationGlobalInfo.TargetApplicationModuleMD.Types)
+                foreach (TypeDef t_ in PackedApplication_GlobalInfo.PackedApplication_ModuleMD.Types)
                 {
                     switch (t_.Namespace)
                     {
@@ -61,6 +61,7 @@ namespace FourDepack_cs.Security
                             return "EXE (Document) Locker";
                     }
                 }
+                //if (PackedApplication_GlobalInfo.PackedApplication_XMLProject.LockedDocumentProperties != null) { return "Standalone EXE Locker"; }
                 return null;
             }
         }

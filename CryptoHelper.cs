@@ -7,11 +7,11 @@ using System.IO;
 using dnlib.DotNet;
 using dnlib.DotNet.Emit;
 
-namespace FourDepack_cs.Security
+namespace FourDepack.Security
 {
     public class CryptoHelper
     {
-        public static readonly string[] KnownDecryptionKeys = new string[] { "BAD0B46C-EDB8-4BAE-B538-F7C99556A023", "493589549485043859430889230823", "4dotsSoftware012301230123", "433424234234-93435849839453", "3434233454657676434234-92323454534095", "4235r4jk5je4jt3klejr4" };
+        public static readonly string[] KnownDecryptionKeys = new string[] { "BAD0B46C-EDB8-4BAE-B538-F7C99556A023", "493589549485043859430889230823", "4dotsSoftware012301230123", "433424234234-93435849839453", "3434233454657676434234-92323454534095", "4235r4jk5je4jt3klejr4", "@#%$%DDGCS@#$%$$#%$%##%@#%$@#%fgsfgfdg" };
         public static readonly uint CRC32_DefaultPolynomial = 0xEDB88320;
 
         public enum SearchType
@@ -26,12 +26,12 @@ namespace FourDepack_cs.Security
             return md5provider.ComputeHash(data);
         }
 
-        public static string[] FindKeys(FourDepack_cs.FourDots_PackedApplication packedAppInfo, SearchType keySearchType ) // If a decryption method is called, it adds the string present just before to the found keys array and returns the final array.
+        public static string[] FindKeys(FourDepack.FourDots_PackedApplication packedAppInfo, SearchType keySearchType ) // If a decryption method is called, it adds the string present just before to the found keys array and returns the final array.
         {
-            string callOperandStringCompare = "EncryptHelper::Encrypt";
-            if (keySearchType == SearchType.DecryptionKeys) { callOperandStringCompare = "EncryptHelper::Decrypt";}
+            string callOperandStringCompare = "CryptoHelper::Encrypt";
+            if (keySearchType == SearchType.DecryptionKeys) { callOperandStringCompare = "CryptoHelper::Decrypt";}
             List<string> foundDecryptionKeys = new List<string>();
-            foreach (TypeDef t_ in packedAppInfo.TargetApplicationModuleMD.Types)
+            foreach (TypeDef t_ in packedAppInfo.PackedApplication_ModuleMD.Types)
             {
                 foreach (MethodDef methods in t_.Methods)
                 {

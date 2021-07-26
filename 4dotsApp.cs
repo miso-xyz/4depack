@@ -6,55 +6,65 @@ using System.Linq;
 using System.Text;
 using dnlib.DotNet;
 
-namespace FourDepack_cs
+namespace FourDepack
 {
     public class FourDots_PackedApplication
     {
-        public ModuleDefMD TargetApplicationModuleMD;
-        public Assembly TargetApplicationASM;
-        public string TargetApplicationPath;
-        public ProjectFile TargetApplicationPrj;
-        public List<AppResources> TargetApplicationResources = new List<AppResources>();
+        public ModuleDefMD PackedApplication_ModuleMD;
+        public Assembly PackedApplication_ASM;
+        public string PackedApplication_FilePath;
+        public XMLProject PackedApplication_XMLProject;
+        public ZSPProject PackedApplication_ZSPProject;
+        public List<AppResources> PackedApplication_Resources = new List<AppResources>();
 
         public List<string> ResourceTargets = new List<string>() {"LockedDocument", "project", "4dotsAudioBackgroundMusic", "zipexe", ".jpg"};
 
         public FourDots_PackedApplication(string path)
         {
-            TargetApplicationPath = path;
-            InitializeTargetApplication();
+            PackedApplication_FilePath = path;
+            InitializePackedApplication();
             ExtractResources();
-            InitializeTargetApplicationProjectFile();
+            InitializePackedApplicationProjectFiles();
             TryDecryptImages("433424234234-93435849839453");
         }
 
-        private void InitializeTargetApplication()
+        public bool UsesZSPProject()
         {
-            TargetApplicationASM = Assembly.LoadFile(TargetApplicationPath);
-            TargetApplicationModuleMD = ModuleDefMD.Load(TargetApplicationPath);
+            foreach (AppResources resource in PackedApplication_Resources)
+            {
+                if (resource.Filename.Contains("project.zsp")) { return true; }
+            }
+            return false;
         }
 
-        private void InitializeTargetApplicationProjectFile()
+        private void InitializePackedApplication()
         {
-            foreach (AppResources resource in TargetApplicationResources)
+            PackedApplication_ASM = Assembly.LoadFile(PackedApplication_FilePath);
+            PackedApplication_ModuleMD = ModuleDefMD.Load(PackedApplication_FilePath);
+        }
+
+        private void InitializePackedApplicationProjectFiles()
+        {
+            foreach (AppResources resource in PackedApplication_Resources)
             {
-                if (resource.Filename.Contains("project.xml")) { TargetApplicationPrj = new ProjectFile(Encoding.Default.GetString(resource.RawData)); return; }
-                if (resource.Filename.Contains("project.zsp")) { TargetApplicationPrj = new ProjectFile(Encoding.Default.GetString(resource.RawData)); TargetApplicationPrj.isZSPProjectFile = true; return; }
+                if (resource.Filename.Contains("project.xml")) { PackedApplication_XMLProject = new XMLProject(Encoding.Default.GetString(resource.RawData)); }
+                if (resource.Filename.Contains("project.zsp")) { PackedApplication_ZSPProject = new ZSPProject(Encoding.Default.GetString(resource.RawData)); }
             }
         }
 
         private void ExtractResources()
         {
-            foreach (string ResourceName in TargetApplicationASM.GetManifestResourceNames())
+            foreach (string ResourceName in PackedApplication_ASM.GetManifestResourceNames())
             {
                 foreach (string ResourceTargetNames in ResourceTargets)
                 {
                     if (ResourceName.Contains(ResourceTargetNames))
                     {
-                        using (BinaryReader br = new BinaryReader(TargetApplicationASM.GetManifestResourceStream(ResourceName)))
+                        using (BinaryReader br = new BinaryReader(PackedApplication_ASM.GetManifestResourceStream(ResourceName)))
                         {
                             MemoryStream ms = new MemoryStream();
                             MemoryStream resourceStream = new MemoryStream();
-                            TargetApplicationASM.GetManifestResourceStream(ResourceName).CopyTo(resourceStream);
+                            PackedApplication_ASM.GetManifestResourceStream(ResourceName).CopyTo(resourceStream);
                             while (true)
                             {
                                 byte[] buffer = new byte[0x8000];
@@ -62,7 +72,7 @@ namespace FourDepack_cs
                                 if (num <= 0) { break; }              // if 0, don't write data & exit loop
                                 ms.Write(buffer, 0, num);
                             }
-                            TargetApplicationResources.Add(new AppResources(resourceStream.ToArray(), ResourceName));
+                            PackedApplication_Resources.Add(new AppResources(resourceStream.ToArray(), ResourceName));
                         }
                     }
                 }
@@ -71,7 +81,8 @@ namespace FourDepack_cs
 
         public void TryDecryptImages(string decryptionKey)
         {
-            foreach (AppResources resource in TargetApplicationResources)
+            if (UsesZSPProject()) { return; }
+            foreach (AppResources resource in PackedApplication_Resources)
             {
                 int fileExtensionDotIndex = resource.Filename.LastIndexOf('.');
                 string resourceFileExtension = resource.Filename.ToLower().Substring(fileExtensionDotIndex);
@@ -83,7 +94,7 @@ namespace FourDepack_cs
                     case "jpg":
                     case "jpeg":
                     case "tiff":
-                        if (TargetApplicationPrj.EncryptImages) { resource.RawData = Security.CryptoHelper.DecryptBytes(resource.RawData, decryptionKey); }
+                        if (PackedApplication_XMLProject.Properties.EncryptImages) { resource.RawData = Security.CryptoHelper.DecryptBytes(resource.RawData, decryptionKey); }
                         else { return; }
                         break;
                     default:

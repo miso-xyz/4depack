@@ -8,8 +8,8 @@
     <ProjectGuid>{BA3E95D4-0335-433F-A814-72D1B8865ABF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>_4depack_cs</RootNamespace>
-    <AssemblyName>4depack-cs</AssemblyName>
+    <RootNamespace>FourDepack</RootNamespace>
+    <AssemblyName>4depack</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -52,10 +52,12 @@
   <ItemGroup>
     <Compile Include="4dotsApp.cs" />
     <Compile Include="CryptoHelper.cs" />
-    <Compile Include="ProjectFile.cs" />
+    <Compile Include="ProjectFileTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AppResources.cs" />
     <Compile Include="Protections.cs" />
+    <Compile Include="XMLProject.cs" />
+    <Compile Include="ZSPProject.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
