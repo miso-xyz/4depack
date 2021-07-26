@@ -11,21 +11,21 @@ Library to play around with 4dots packers
 </pre>
 
 ## Works with
-<pre>
-- ZIP Self Extractor Maker V1.8
-- Convert Powerpoint to EXE 4dots V3.5
-- Convert Excel to EXE 4dots V2.4
-- Convert Word to EXE 4dots V2.4
-- Standalone EXE Locker V2.4
-- Standalone EXE Document Locker V1.1
-</pre>
+Packer Name | Supported Version | Latest Version
+------------- | :---: | :---:
+Convert Excel to EXE | v2.4 | v2.4
+Convert Powerpoint to EXE | v3.5 | v3.5
+Convert Word to EXE | v2.4 | v2.4
+Standalone EXE Document Locker | v1.1 | v1.1
+Standalone EXE Locker | v2.4 | v2.4
+ZIP Self Extractor Maker | v1.8 | v1.8
 
 ## To Do:
 - Change names (some are really long)
 
 ## Code Samples
 <details>
- <summary>Get passwords</summary>
+ <summary>Get passwords (Any supported packer)</summary>
  <hr></hr>
   
   ```csharp
@@ -54,7 +54,7 @@ Library to play around with 4dots packers
   <hr></hr>
 </details>
 <details>
- <summary>Dump resources</summary>
+ <summary>Dump resources (Any supported packer)</summary>
  <hr></hr>
   
   ```csharp
