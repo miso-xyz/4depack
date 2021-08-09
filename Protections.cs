@@ -59,6 +59,8 @@ namespace FourDepack.Security
                             return "ZIP Self Extractor Maker";
                         case "LockedDocument":
                             return "EXE (Document) Locker";
+                        case "EXESlideshow":
+                            return "EXE Slideshow";
                     }
                 }
                 //if (PackedApplication_GlobalInfo.PackedApplication_XMLProject.LockedDocumentProperties != null) { return "Standalone EXE Locker"; }

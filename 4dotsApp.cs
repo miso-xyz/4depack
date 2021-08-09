@@ -47,7 +47,7 @@ namespace FourDepack
         {
             foreach (AppResources resource in PackedApplication_Resources)
             {
-                if (resource.Filename.Contains("project.xml")) { PackedApplication_XMLProject = new XMLProject(Encoding.Default.GetString(resource.RawData)); }
+                if (resource.Filename.Contains("project.xml")) { PackedApplication_XMLProject = new XMLProject(Encoding.Default.GetString(resource.RawData), PackedApplication_FilePath); }
                 if (resource.Filename.Contains("project.zsp")) { PackedApplication_ZSPProject = new ZSPProject(Encoding.Default.GetString(resource.RawData)); }
             }
         }

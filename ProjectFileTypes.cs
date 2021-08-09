@@ -14,6 +14,25 @@ namespace FourDepack.ProjectFileTypes
         public string Arguments = "";
     }
 
+    public class XMLEXESlideshowProjectProperties
+    {
+        public Color BackgroundColor = Color.Black;
+        public string BackgroundMusic = "";
+        public bool BackgroundMusicLoop = false;
+        public string BackgroundMusicVolume = "";
+        public decimal EffectDuration = -1m;
+        public bool ExitMouse = false;
+        public bool ExtendSlideshow = false;
+        public bool HideMouseCursor = false;
+        public int ImageAlign = -1;
+        public int ImageTransition = -1;
+        public bool LoopSlideshow = false;
+        public bool RotateEXIF = false;
+        public SlideshowSizeModeEnum SizeMode = SlideshowSizeModeEnum.Zoom;
+        public List<SlideException> SlideExceptions = new List<SlideException>();
+        public decimal StayDuration = -1m;
+    }
+
     public class XMLLockedDocumentProjectProperties
     {
         public string WindowTitle = "";

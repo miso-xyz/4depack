@@ -15,13 +15,29 @@ namespace FourDepack
         public XmlDocument XMLSource = new XmlDocument();
         public XMLProjectProperties Properties = new XMLProjectProperties();
         public XMLLockedDocumentProjectProperties LockedDocumentProperties = new XMLLockedDocumentProjectProperties();
+        public XMLEXESlideshowProjectProperties EXESlideshowProperties = new XMLEXESlideshowProjectProperties();
         private bool isLockedDocument = false;
 
-        public XMLProject(string RawXML)
+        public XMLProject(string RawXML, string appPath)
         {
             try { XMLSource.LoadXml(RawXML); }
             catch { try { XMLSource.LoadXml(Encoding.Default.GetString(CryptoHelper.DecryptBytes(Convert.FromBase64String(RawXML), "4dotsSoftware012301230123"))); isLockedDocument = true; } catch { throw; } } // Standalon EXE Locker has an encrypted project.xml
-            if (!isLockedDocument) { InitializeProject(); } else { InitializeLockedDocumentProject(); }
+            if (!isLockedDocument) { InitializeProject(); }
+            else
+            {
+                switch (new Protections(appPath).PackerName)
+                {
+                    case "EXESlideshow":
+                        InitializeEXESlideshowProject();
+                        break;
+                    case "LockedDocument":
+                        InitializeLockedDocumentProject();
+                        break;
+                    default:
+                        InitializeProject();
+                        break;
+                }
+            }
         }
 
         public void Refresh() { if (!isLockedDocument) { InitializeProject(); } else { InitializeLockedDocumentProject(); } }
@@ -95,6 +111,62 @@ namespace FourDepack
 				LockedDocumentProperties.HasViewTimeTo = true;
 				LockedDocumentProperties.ViewTimeTo = DateTime.FromFileTimeUtc(long.Parse(xmlNode.Attributes.GetNamedItem("ViewTimeTo").Value.ToString()));
 			}
+        }
+
+        private void InitializeEXESlideshowProject()
+        {
+            XmlNode xmlNode = XMLSource.SelectSingleNode("//Misc");
+            EXESlideshowProperties.StayDuration = decimal.Parse(xmlNode.Attributes.GetNamedItem("StayOnSlide").Value.ToString().Replace(",", "."), new CultureInfo("en-US"));
+            EXESlideshowProperties.EffectDuration = decimal.Parse(xmlNode.Attributes.GetNamedItem("EffectDuration").Value.ToString().Replace(",", "."), new CultureInfo("en-US"));
+            EXESlideshowProperties.ImageTransition = int.Parse(xmlNode.Attributes.GetNamedItem("ImageTransition").Value.ToString());
+            EXESlideshowProperties.BackgroundMusic = xmlNode.Attributes.GetNamedItem("BackgroundMusic").Value.ToString();
+            EXESlideshowProperties.BackgroundMusicVolume = xmlNode.Attributes.GetNamedItem("BackgroundMusicVolume").Value.ToString();
+            EXESlideshowProperties.BackgroundMusicLoop = (xmlNode.Attributes.GetNamedItem("BackgroundMusicLoop").Value.ToString() == bool.TrueString);
+            EXESlideshowProperties.SizeMode = (SlideshowSizeModeEnum)Enum.Parse(typeof(SlideshowSizeModeEnum), xmlNode.Attributes.GetNamedItem("SizeMode").Value.ToString());
+            EXESlideshowProperties.ImageAlign = int.Parse(xmlNode.Attributes.GetNamedItem("ImageAlign").Value.ToString());
+            EXESlideshowProperties.BackgroundColor = ColorTranslator.FromWin32(int.Parse(xmlNode.Attributes.GetNamedItem("BackgroundColor").Value.ToString()));
+            EXESlideshowProperties.RotateEXIF = (xmlNode.Attributes.GetNamedItem("RotateEXIF").Value.ToString() == bool.TrueString);
+            EXESlideshowProperties.LoopSlideshow = (xmlNode.Attributes.GetNamedItem("LoopSlideshow").Value.ToString() == bool.TrueString);
+            EXESlideshowProperties.ExtendSlideshow = (xmlNode.Attributes.GetNamedItem("ExtendSlideshow").Value.ToString() == bool.TrueString);
+            try
+            {
+                EXESlideshowProperties.HideMouseCursor = (xmlNode.Attributes.GetNamedItem("HideMouseCursor").Value.ToString() == bool.TrueString);
+            }
+            catch { }
+            try
+            {
+                EXESlideshowProperties.ExitMouse = (xmlNode.Attributes.GetNamedItem("ExitMouse").Value.ToString() == bool.TrueString);
+            }
+            catch { }
+            XmlNodeList xmlNodeList = XMLSource.SelectNodes("//Exception");
+            if (xmlNodeList != null)
+            {
+                for (int i = 0; i < xmlNodeList.Count; i++)
+                {
+                    SlideException ex = new SlideException();
+                    if (xmlNodeList[i].Attributes.GetNamedItem("SlideNumber") != null)
+                    {
+                        ex.SlideNumber = int.Parse(xmlNodeList[i].Attributes.GetNamedItem("SlideNumber").Value.ToString());
+                    }
+                    if (xmlNodeList[i].Attributes.GetNamedItem("Duration") != null)
+                    {
+                        ex.StayDuration = decimal.Parse(xmlNodeList[i].Attributes.GetNamedItem("Duration").Value.ToString().Replace(",", "."), new CultureInfo("en-US"));
+                    }
+                    if (xmlNodeList[i].Attributes.GetNamedItem("Transition") != null)
+                    {
+                        ex.ImageTransition = int.Parse(xmlNodeList[i].Attributes.GetNamedItem("Transition").Value.ToString());
+                    }
+                    if (xmlNodeList[i].Attributes.GetNamedItem("AudioFilepath") != null)
+                    {
+                        ex.AudioFilepath = xmlNodeList[i].Attributes.GetNamedItem("AudioFilepath").Value.ToString();
+                    }
+                    if (xmlNodeList[i].Attributes.GetNamedItem("Delay") != null)
+                    {
+                        ex.AudioDelay = decimal.Parse(xmlNodeList[i].Attributes.GetNamedItem("Delay").Value.ToString().Replace(",", "."), new CultureInfo("en-US"));
+                    }
+                    EXESlideshowProperties.SlideExceptions.Add(ex);
+                }
+            }
         }
 
         private void InitializeProject()
